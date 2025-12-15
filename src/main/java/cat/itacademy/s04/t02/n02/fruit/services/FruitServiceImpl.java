@@ -46,4 +46,9 @@ public class FruitServiceImpl implements FruitService {
     public List<Fruit> getAllFruits() {
         return fruitRepository.findAll();
     }
+
+    @Override
+    public List<Fruit> getFruitsByProviderId(Long id) {
+        return null;
+    }
 }

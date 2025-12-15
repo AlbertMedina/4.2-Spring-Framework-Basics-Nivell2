@@ -48,4 +48,10 @@ public class FruitController {
         List<Fruit> fruits = fruitService.getAllFruits();
         return ResponseEntity.ok(fruits);
     }
+
+    @GetMapping("/fruits?providerId={id}")
+    public ResponseEntity<List<Fruit>> getFruitsByProviderId(@PathVariable Long id) {
+        List<Fruit> fruits = fruitService.getFruitsByProviderId(id);
+        return ResponseEntity.ok(fruits);
+    }
 }

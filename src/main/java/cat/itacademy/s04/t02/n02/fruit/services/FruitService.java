@@ -15,4 +15,6 @@ public interface FruitService {
     Fruit getFruitById(Long id);
 
     List<Fruit> getAllFruits();
+
+    List<Fruit> getFruitsByProviderId(Long id);
 }
