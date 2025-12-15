@@ -4,9 +4,11 @@ import cat.itacademy.s04.t02.n02.fruit.dto.ProviderDTO;
 import cat.itacademy.s04.t02.n02.fruit.model.Provider;
 import cat.itacademy.s04.t02.n02.fruit.repository.FruitRepository;
 import cat.itacademy.s04.t02.n02.fruit.repository.ProviderRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class ProviderServiceImpl implements ProviderService {
 
     private final ProviderRepository providerRepository;
