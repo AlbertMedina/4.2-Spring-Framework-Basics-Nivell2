@@ -23,7 +23,7 @@ public class FruitServiceImpl implements FruitService {
 
     @Override
     public Fruit updateFruit(Long id, String name, int weightInKg) {
-        Fruit fruit = fruitRepository.findById(id).orElseThrow(() -> new RuntimeException("Fruit " + id + "not found"));
+        Fruit fruit = fruitRepository.findById(id).orElseThrow(() -> new RuntimeException("Fruit " + id + " not found"));
         fruit.setName(name);
         fruit.setWeightInKg(weightInKg);
         return fruitRepository.save(fruit);
@@ -32,14 +32,14 @@ public class FruitServiceImpl implements FruitService {
     @Override
     public void removeFruit(Long id) {
         if (!fruitRepository.existsById(id)) {
-            throw new RuntimeException("Fruit " + id + "not found");
+            throw new RuntimeException("Fruit " + id + " not found");
         }
         fruitRepository.deleteById(id);
     }
 
     @Override
     public Fruit getFruitById(Long id) {
-        return fruitRepository.findById(id).orElseThrow(() -> new RuntimeException("Fruit " + id + "not found"));
+        return fruitRepository.findById(id).orElseThrow(() -> new RuntimeException("Fruit " + id + " not found"));
     }
 
     @Override
