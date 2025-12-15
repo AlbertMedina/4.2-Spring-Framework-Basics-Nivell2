@@ -2,6 +2,7 @@ package cat.itacademy.s04.t02.n02.fruit.services;
 
 import cat.itacademy.s04.t02.n02.fruit.model.Fruit;
 import cat.itacademy.s04.t02.n02.fruit.repository.FruitRepository;
+import cat.itacademy.s04.t02.n02.fruit.repository.ProviderRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,9 +11,11 @@ import java.util.List;
 public class FruitServiceImpl implements FruitService {
 
     private final FruitRepository fruitRepository;
+    private final ProviderRepository providerRepository;
 
-    public FruitServiceImpl(FruitRepository fruitRepository) {
+    public FruitServiceImpl(FruitRepository fruitRepository, ProviderRepository providerRepository) {
         this.fruitRepository = fruitRepository;
+        this.providerRepository = providerRepository;
     }
 
     @Override
@@ -49,6 +52,10 @@ public class FruitServiceImpl implements FruitService {
 
     @Override
     public List<Fruit> getFruitsByProviderId(Long id) {
-        return null;
+        if (!providerRepository.existsById(id)) {
+            throw new RuntimeException("Provider " + id + " not found");
+        }
+
+        return fruitRepository.findByProviderId(id);
     }
 }
