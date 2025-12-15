@@ -11,11 +11,15 @@ public class Fruit {
 
     private String name;
     private int weightInKg;
-    
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "provider_id")
+    private Provider provider;
+
     public Fruit() {
     }
 
-    public Fruit(String name, int weightInKg) {
+    public Fruit(String name, int weightInKg, Provider provider) {
         this.name = name;
         this.weightInKg = weightInKg;
     }

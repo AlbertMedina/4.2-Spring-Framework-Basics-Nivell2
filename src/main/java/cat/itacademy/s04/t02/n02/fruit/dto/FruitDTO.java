@@ -13,12 +13,16 @@ public class FruitDTO {
     @Positive
     private int weightInKg;
 
+    @NotNull
+    private Long providerId;
+
     public FruitDTO() {
     }
 
-    public FruitDTO(String name, int weightInKg) {
+    public FruitDTO(String name, int weightInKg, Long providerId) {
         this.name = name;
         this.weightInKg = weightInKg;
+        this.providerId = providerId;
     }
 
     public String getName() {
@@ -35,5 +39,13 @@ public class FruitDTO {
 
     public void setWeightInKg(int weightInKg) {
         this.weightInKg = weightInKg;
+    }
+
+    public Long getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(Long providerId) {
+        this.providerId = providerId;
     }
 }
