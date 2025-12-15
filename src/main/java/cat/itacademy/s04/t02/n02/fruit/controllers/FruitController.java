@@ -44,14 +44,13 @@ public class FruitController {
     }
 
     @GetMapping("/fruits")
-    public ResponseEntity<List<Fruit>> getAllFruits() {
-        List<Fruit> fruits = fruitService.getAllFruits();
-        return ResponseEntity.ok(fruits);
-    }
-
-    @GetMapping("/fruits?providerId={id}")
-    public ResponseEntity<List<Fruit>> getFruitsByProviderId(@PathVariable Long id) {
-        List<Fruit> fruits = fruitService.getFruitsByProviderId(id);
+    public ResponseEntity<List<Fruit>> getFruits(@RequestParam(required = false) Long providerId) {
+        List<Fruit> fruits;
+        if (providerId != null) {
+            fruits = fruitService.getFruitsByProviderId(providerId);
+        } else {
+            fruits = fruitService.getAllFruits();
+        }
         return ResponseEntity.ok(fruits);
     }
 }
