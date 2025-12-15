@@ -22,6 +22,7 @@ public class Fruit {
     public Fruit(String name, int weightInKg, Provider provider) {
         this.name = name;
         this.weightInKg = weightInKg;
+        this.provider = provider;
     }
 
     public Long getId() {
