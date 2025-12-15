@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: fruit-mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: fruitdb
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  app:
+    container_name: fruit-api
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/fruitdb
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD:
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:
