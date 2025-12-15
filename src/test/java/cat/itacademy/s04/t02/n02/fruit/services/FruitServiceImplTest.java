@@ -33,9 +33,9 @@ public class FruitServiceImplTest {
 
     @Test
     void createFruit_shouldSaveFruit() {
-        FruitDTO fruitDTO = new FruitDTO("Watermelon", 2, (Long) 1L);
+        FruitDTO fruitDTO = new FruitDTO("Watermelon", 2, 1L);
 
-        when(providerRepository.findById((Long) 1L)).thenReturn(Optional.of(new Provider("Albert", "Spain")));
+        when(providerRepository.findById(1L)).thenReturn(Optional.of(new Provider("Albert", "Spain")));
 
         when(fruitRepository.save(any(Fruit.class))).thenAnswer(i -> i.getArgument(0));
 
@@ -53,26 +53,27 @@ public class FruitServiceImplTest {
         Provider provider = new Provider("Albert", "Spain");
 
         Fruit fruit = new Fruit("Watermelon", 2, provider);
-
-        when(fruitRepository.findById((Long) 1L)).thenReturn(Optional.of(fruit));
+        when(fruitRepository.findById(1L)).thenReturn(Optional.of(fruit));
         when(fruitRepository.save(any(Fruit.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        
+        when(providerRepository.findById(1L)).thenReturn(Optional.of(provider));
 
-        FruitDTO fruitDTO = new FruitDTO("Melon", 3, (Long) 1L);
+        FruitDTO fruitDTO = new FruitDTO("Melon", 3, 1L);
 
-        Fruit updated = fruitService.updateFruit((Long) 1L, fruitDTO);
+        Fruit updated = fruitService.updateFruit(1L, fruitDTO);
 
         assertEquals("Melon", updated.getName());
         assertEquals(3, updated.getWeightInKg());
 
-        verify(fruitRepository).findById((Long) 1L);
+        verify(fruitRepository).findById(1L);
         verify(fruitRepository).save(any(Fruit.class));
     }
 
     @Test
     void removeFruit_shouldDeleteExistingFruit() {
-        Long fruitId = (Long) 1L;
+        Long fruitId = 1L;
 
-        when(fruitRepository.existsById(fruitId)).thenReturn((Boolean) true);
+        when(fruitRepository.existsById(fruitId)).thenReturn(true);
         doNothing().when(fruitRepository).deleteById(fruitId);
 
         assertDoesNotThrow(() -> fruitService.removeFruit(fruitId));
@@ -86,16 +87,16 @@ public class FruitServiceImplTest {
         Provider provider = new Provider("Albert", "Spain");
         Fruit fruit = new Fruit("Watermelon", 2, provider);
 
-        when(fruitRepository.findById((Long) 1L)).thenReturn(Optional.of(fruit));
+        when(fruitRepository.findById(1L)).thenReturn(Optional.of(fruit));
 
-        Fruit result = fruitService.getFruitById((Long) 1L);
+        Fruit result = fruitService.getFruitById(1L);
 
         assertNotNull(result);
         assertEquals("Watermelon", result.getName());
         assertEquals(2, result.getWeightInKg());
         assertEquals(provider, result.getProvider());
 
-        verify(fruitRepository).findById((Long) 1L);
+        verify(fruitRepository).findById(1L);
     }
 
     @Test
