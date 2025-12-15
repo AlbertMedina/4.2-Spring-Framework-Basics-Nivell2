@@ -4,7 +4,9 @@ import cat.itacademy.s04.t02.n02.fruit.dto.ProviderDTO;
 import cat.itacademy.s04.t02.n02.fruit.model.Provider;
 import cat.itacademy.s04.t02.n02.fruit.repository.FruitRepository;
 import cat.itacademy.s04.t02.n02.fruit.repository.ProviderRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -22,7 +24,7 @@ public class ProviderServiceImpl implements ProviderService {
     @Override
     public Provider createProvider(ProviderDTO providerDTO) {
         if (providerRepository.existsByName(providerDTO.getName())) {
-            throw new RuntimeException("Provider '" + providerDTO.getName() + "' already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Provider '" + providerDTO.getName() + "' already exists");
         }
 
         Provider provider = new Provider(providerDTO.getName(), providerDTO.getCountry());
@@ -31,10 +33,10 @@ public class ProviderServiceImpl implements ProviderService {
 
     @Override
     public Provider updateProvider(Long id, ProviderDTO providerDTO) {
-        Provider provider = providerRepository.findById(id).orElseThrow(() -> new RuntimeException("Provider " + id + " not found"));
+        Provider provider = providerRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Provider " + id + " not found"));
 
         if (!provider.getName().equals(providerDTO.getName()) && providerRepository.existsByName(providerDTO.getName())) {
-            throw new RuntimeException("Provider '" + providerDTO.getName() + "' already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Provider '" + providerDTO.getName() + "' already exists");
         }
 
         provider.setName(providerDTO.getName());
@@ -45,11 +47,11 @@ public class ProviderServiceImpl implements ProviderService {
     @Override
     public void removeProvider(Long id) {
         if (!providerRepository.existsById(id)) {
-            throw new RuntimeException("Provider " + id + " not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Provider " + id + " not found");
         }
 
         if (fruitRepository.existsByProviderId(id)) {
-            throw new RuntimeException("Provider " + id + " has associated fruits, so it cannot be removed");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Provider " + id + " has associated fruits, so it cannot be removed");
         }
 
         providerRepository.deleteById(id);
@@ -57,7 +59,7 @@ public class ProviderServiceImpl implements ProviderService {
 
     @Override
     public Provider getProviderById(Long id) {
-        return providerRepository.findById(id).orElseThrow(() -> new RuntimeException("Provider " + id + " not found"));
+        return providerRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Provider " + id + " not found"));
     }
 
     @Override

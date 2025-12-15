@@ -5,7 +5,9 @@ import cat.itacademy.s04.t02.n02.fruit.model.Fruit;
 import cat.itacademy.s04.t02.n02.fruit.model.Provider;
 import cat.itacademy.s04.t02.n02.fruit.repository.FruitRepository;
 import cat.itacademy.s04.t02.n02.fruit.repository.ProviderRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -22,7 +24,8 @@ public class FruitServiceImpl implements FruitService {
 
     @Override
     public Fruit createFruit(FruitDTO fruitDTO) {
-        Provider provider = providerRepository.findById(fruitDTO.getProviderId()).orElseThrow(() -> new RuntimeException("Provider " + fruitDTO.getProviderId() + " not found"));
+        Provider provider = providerRepository.findById(fruitDTO.getProviderId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Provider " + fruitDTO.getProviderId() + " not found"));
+
 
         Fruit fruit = new Fruit(fruitDTO.getName(), fruitDTO.getWeightInKg(), provider);
         return fruitRepository.save(fruit);
@@ -30,12 +33,12 @@ public class FruitServiceImpl implements FruitService {
 
     @Override
     public Fruit updateFruit(Long id, FruitDTO fruitDTO) {
-        Fruit fruit = fruitRepository.findById(id).orElseThrow(() -> new RuntimeException("Fruit " + id + " not found"));
+        Fruit fruit = fruitRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fruit " + id + " not found"));
         fruit.setName(fruitDTO.getName());
         fruit.setWeightInKg(fruitDTO.getWeightInKg());
 
         if (fruitDTO.getProviderId() != null && !fruitDTO.getProviderId().equals(fruit.getProvider().getId())) {
-            Provider newProvider = providerRepository.findById(fruitDTO.getProviderId()).orElseThrow(() -> new RuntimeException("Provider " + fruitDTO.getProviderId() + " not found"));
+            Provider newProvider = providerRepository.findById(fruitDTO.getProviderId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Provider " + fruitDTO.getProviderId() + " not found"));
             fruit.setProvider(newProvider);
         }
 
@@ -45,14 +48,14 @@ public class FruitServiceImpl implements FruitService {
     @Override
     public void removeFruit(Long id) {
         if (!fruitRepository.existsById(id)) {
-            throw new RuntimeException("Fruit " + id + " not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Fruit " + id + " not found");
         }
         fruitRepository.deleteById(id);
     }
 
     @Override
     public Fruit getFruitById(Long id) {
-        return fruitRepository.findById(id).orElseThrow(() -> new RuntimeException("Fruit " + id + " not found"));
+        return fruitRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Fruit " + id + " not found"));
     }
 
     @Override
@@ -63,7 +66,7 @@ public class FruitServiceImpl implements FruitService {
     @Override
     public List<Fruit> getFruitsByProviderId(Long id) {
         if (!providerRepository.existsById(id)) {
-            throw new RuntimeException("Provider " + id + " not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Provider " + id + " not found");
         }
 
         return fruitRepository.findByProviderId(id);
