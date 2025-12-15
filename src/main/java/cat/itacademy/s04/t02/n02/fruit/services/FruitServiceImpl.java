@@ -1,6 +1,7 @@
 package cat.itacademy.s04.t02.n02.fruit.services;
 
 import cat.itacademy.s04.t02.n02.fruit.model.Fruit;
+import cat.itacademy.s04.t02.n02.fruit.model.Provider;
 import cat.itacademy.s04.t02.n02.fruit.repository.FruitRepository;
 import cat.itacademy.s04.t02.n02.fruit.repository.ProviderRepository;
 import org.springframework.stereotype.Service;
@@ -19,8 +20,10 @@ public class FruitServiceImpl implements FruitService {
     }
 
     @Override
-    public Fruit createFruit(String name, int weightInKg) {
-        Fruit fruit = new Fruit(name, weightInKg);
+    public Fruit createFruit(String name, int weightInKg, Long providerId) {
+        Provider provider = providerRepository.findById(providerId).orElseThrow(() -> new RuntimeException("Provider " + providerId + " not found"));
+
+        Fruit fruit = new Fruit(name, weightInKg, provider);
         return fruitRepository.save(fruit);
     }
 

@@ -21,7 +21,7 @@ public class FruitController {
 
     @PostMapping("/fruits")
     public ResponseEntity<Fruit> addFruit(@RequestBody @Valid FruitDTO fruitDTORequest) {
-        Fruit fruit = fruitService.createFruit(fruitDTORequest.getName(), fruitDTORequest.getWeightInKg());
+        Fruit fruit = fruitService.createFruit(fruitDTORequest.getName(), fruitDTORequest.getWeightInKg(), fruitDTORequest.getProviderId());
         return ResponseEntity.status(HttpStatus.CREATED).body(fruit);
     }
 

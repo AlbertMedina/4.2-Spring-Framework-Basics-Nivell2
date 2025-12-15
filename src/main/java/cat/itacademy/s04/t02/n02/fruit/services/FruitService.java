@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface FruitService {
 
-    Fruit createFruit(String name, int weightInKg);
+    Fruit createFruit(String name, int weightInKg, Long providerId);
 
     Fruit updateFruit(Long id, String name, int weightInKg);
 
