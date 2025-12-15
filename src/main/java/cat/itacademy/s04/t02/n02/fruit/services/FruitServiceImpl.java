@@ -1,5 +1,6 @@
 package cat.itacademy.s04.t02.n02.fruit.services;
 
+import cat.itacademy.s04.t02.n02.fruit.dto.FruitDTO;
 import cat.itacademy.s04.t02.n02.fruit.model.Fruit;
 import cat.itacademy.s04.t02.n02.fruit.model.Provider;
 import cat.itacademy.s04.t02.n02.fruit.repository.FruitRepository;
@@ -20,18 +21,18 @@ public class FruitServiceImpl implements FruitService {
     }
 
     @Override
-    public Fruit createFruit(String name, int weightInKg, Long providerId) {
-        Provider provider = providerRepository.findById(providerId).orElseThrow(() -> new RuntimeException("Provider " + providerId + " not found"));
+    public Fruit createFruit(FruitDTO fruitDTO) {
+        Provider provider = providerRepository.findById(fruitDTO.getProviderId()).orElseThrow(() -> new RuntimeException("Provider " + fruitDTO.getProviderId() + " not found"));
 
-        Fruit fruit = new Fruit(name, weightInKg, provider);
+        Fruit fruit = new Fruit(fruitDTO.getName(), fruitDTO.getWeightInKg(), provider);
         return fruitRepository.save(fruit);
     }
 
     @Override
-    public Fruit updateFruit(Long id, String name, int weightInKg) {
+    public Fruit updateFruit(Long id, FruitDTO fruitDTO) {
         Fruit fruit = fruitRepository.findById(id).orElseThrow(() -> new RuntimeException("Fruit " + id + " not found"));
-        fruit.setName(name);
-        fruit.setWeightInKg(weightInKg);
+        fruit.setName(fruitDTO.getName());
+        fruit.setWeightInKg(fruitDTO.getWeightInKg());
         return fruitRepository.save(fruit);
     }
 

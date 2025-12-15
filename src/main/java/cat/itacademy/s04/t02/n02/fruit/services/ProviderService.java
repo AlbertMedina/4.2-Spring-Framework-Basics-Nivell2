@@ -1,14 +1,15 @@
 package cat.itacademy.s04.t02.n02.fruit.services;
 
+import cat.itacademy.s04.t02.n02.fruit.dto.ProviderDTO;
 import cat.itacademy.s04.t02.n02.fruit.model.Provider;
 
 import java.util.List;
 
 public interface ProviderService {
 
-    Provider createProvider(String name, String country);
+    Provider createProvider(ProviderDTO providerDTO);
 
-    Provider updateProvider(Long id, String name, String country);
+    Provider updateProvider(Long id, ProviderDTO providerDTO);
 
     void removeProvider(Long id);
 

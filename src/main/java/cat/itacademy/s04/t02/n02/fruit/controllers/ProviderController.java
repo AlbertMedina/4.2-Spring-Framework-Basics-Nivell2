@@ -21,13 +21,13 @@ public class ProviderController {
 
     @PostMapping("/providers")
     public ResponseEntity<Provider> addProvider(@RequestBody @Valid ProviderDTO providerDTORequest) {
-        Provider provider = providerService.createProvider(providerDTORequest.getName(), providerDTORequest.getCountry());
+        Provider provider = providerService.createProvider(providerDTORequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(provider);
     }
 
     @PutMapping("/providers/{id}")
     public ResponseEntity<Provider> updateProvider(@PathVariable Long id, @RequestBody @Valid ProviderDTO providerDTORequest) {
-        Provider provider = providerService.updateProvider(id, providerDTORequest.getName(), providerDTORequest.getCountry());
+        Provider provider = providerService.updateProvider(id, providerDTORequest);
         return ResponseEntity.ok(provider);
     }
 

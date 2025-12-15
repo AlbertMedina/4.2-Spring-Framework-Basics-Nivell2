@@ -1,6 +1,6 @@
 package cat.itacademy.s04.t02.n02.fruit.services;
 
-import cat.itacademy.s04.t02.n02.fruit.model.Fruit;
+import cat.itacademy.s04.t02.n02.fruit.dto.ProviderDTO;
 import cat.itacademy.s04.t02.n02.fruit.model.Provider;
 import cat.itacademy.s04.t02.n02.fruit.repository.FruitRepository;
 import cat.itacademy.s04.t02.n02.fruit.repository.ProviderRepository;
@@ -18,25 +18,25 @@ public class ProviderServiceImpl implements ProviderService {
     }
 
     @Override
-    public Provider createProvider(String name, String country) {
-        if (providerRepository.existsByName(name)) {
-            throw new RuntimeException("Provider '" + name + "' already exists");
+    public Provider createProvider(ProviderDTO providerDTO) {
+        if (providerRepository.existsByName(providerDTO.getName())) {
+            throw new RuntimeException("Provider '" + providerDTO.getName() + "' already exists");
         }
 
-        Provider provider = new Provider(name, country);
+        Provider provider = new Provider(providerDTO.getName(), providerDTO.getCountry());
         return providerRepository.save(provider);
     }
 
     @Override
-    public Provider updateProvider(Long id, String name, String country) {
+    public Provider updateProvider(Long id, ProviderDTO providerDTO) {
         Provider provider = providerRepository.findById(id).orElseThrow(() -> new RuntimeException("Provider " + id + " not found"));
 
-        if (!provider.getName().equals(name) && providerRepository.existsByName(name)) {
-            throw new RuntimeException("Provider '" + name + "' already exists");
+        if (!provider.getName().equals(providerDTO.getName()) && providerRepository.existsByName(providerDTO.getName())) {
+            throw new RuntimeException("Provider '" + providerDTO.getName() + "' already exists");
         }
 
-        provider.setName(name);
-        provider.setCountry(country);
+        provider.setName(providerDTO.getName());
+        provider.setCountry(providerDTO.getCountry());
         return providerRepository.save(provider);
     }
 

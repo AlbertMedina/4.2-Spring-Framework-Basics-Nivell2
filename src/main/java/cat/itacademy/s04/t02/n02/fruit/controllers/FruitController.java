@@ -21,13 +21,13 @@ public class FruitController {
 
     @PostMapping("/fruits")
     public ResponseEntity<Fruit> addFruit(@RequestBody @Valid FruitDTO fruitDTORequest) {
-        Fruit fruit = fruitService.createFruit(fruitDTORequest.getName(), fruitDTORequest.getWeightInKg(), fruitDTORequest.getProviderId());
+        Fruit fruit = fruitService.createFruit(fruitDTORequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(fruit);
     }
 
     @PutMapping("/fruits/{id}")
     public ResponseEntity<Fruit> updateFruit(@PathVariable Long id, @RequestBody @Valid FruitDTO fruitDTORequest) {
-        Fruit fruit = fruitService.updateFruit(id, fruitDTORequest.getName(), fruitDTORequest.getWeightInKg());
+        Fruit fruit = fruitService.updateFruit(id, fruitDTORequest);
         return ResponseEntity.ok(fruit);
     }
 
