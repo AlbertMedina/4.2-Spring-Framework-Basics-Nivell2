@@ -33,6 +33,12 @@ public class FruitServiceImpl implements FruitService {
         Fruit fruit = fruitRepository.findById(id).orElseThrow(() -> new RuntimeException("Fruit " + id + " not found"));
         fruit.setName(fruitDTO.getName());
         fruit.setWeightInKg(fruitDTO.getWeightInKg());
+
+        if (fruitDTO.getProviderId() != null && !fruitDTO.getProviderId().equals(fruit.getProvider().getId())) {
+            Provider newProvider = providerRepository.findById(fruitDTO.getProviderId()).orElseThrow(() -> new RuntimeException("Provider " + fruitDTO.getProviderId() + " not found"));
+            fruit.setProvider(newProvider);
+        }
+
         return fruitRepository.save(fruit);
     }
 

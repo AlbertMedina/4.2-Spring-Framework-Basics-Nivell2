@@ -43,4 +43,12 @@ public class Fruit {
     public void setWeightInKg(int weightInKg) {
         this.weightInKg = weightInKg;
     }
+
+    public Provider getProvider() {
+        return provider;
+    }
+
+    public void setProvider(Provider provider) {
+        this.provider = provider;
+    }
 }
