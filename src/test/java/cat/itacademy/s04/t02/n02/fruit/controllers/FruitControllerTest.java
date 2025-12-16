@@ -1,6 +1,7 @@
 package cat.itacademy.s04.t02.n02.fruit.controllers;
 
 import cat.itacademy.s04.t02.n02.fruit.dto.FruitDTO;
+import cat.itacademy.s04.t02.n02.fruit.dto.ProviderDTO;
 import cat.itacademy.s04.t02.n02.fruit.model.Fruit;
 import cat.itacademy.s04.t02.n02.fruit.model.Provider;
 import cat.itacademy.s04.t02.n02.fruit.repository.FruitRepository;
@@ -46,24 +47,15 @@ public class FruitControllerTest {
     }
 
     @Test
-    void getFruits_shouldReturnEmptyListInitially() throws Exception {
-        mockMvc.perform(get("/fruits")).andExpect(status().isOk()).andExpect(content().json("[]"));
-    }
-
-    @Test
     void createFruit_shouldReturnFruitWithId() throws Exception {
         mockMvc.perform(post("/fruits").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new FruitDTO("Watermelon", 2, providerId))))
                 .andExpect(status().isCreated()).andExpect(jsonPath("$.id").value(notNullValue())).andExpect(jsonPath("$.name").value("Watermelon")).andExpect(jsonPath("$.weightInKg").value(2));
     }
 
     @Test
-    void getFruitById_shouldReturnCorrectFruit() throws Exception {
-        String response = mockMvc.perform(post("/fruits").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new FruitDTO("Watermelon", 2, providerId))))
-                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
-
-        Fruit fruit = objectMapper.readValue(response, Fruit.class);
-
-        mockMvc.perform(get("/fruits/{id}", fruit.getId())).andExpect(jsonPath("$.id").value(notNullValue())).andExpect(jsonPath("$.name").value("Watermelon")).andExpect(jsonPath("$.weightInKg").value(2));
+    void createFruit_shouldReturnNotFoundWhenAssigningNonExistingProvider() throws Exception {
+        mockMvc.perform(post("/fruits").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new FruitDTO("Watermelon", 2, providerId + 1L))))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -78,15 +70,52 @@ public class FruitControllerTest {
     }
 
     @Test
+    void updateFruit_shouldReturnNotFoundWhenFruitDoesNotExist() throws Exception {
+        mockMvc.perform(put("/fruits/{id}", 1L).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new FruitDTO("Melon", 3, providerId))))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void removeFruit_shouldRemoveFruitAndReturnNoContent() throws Exception {
         String response = mockMvc.perform(post("/fruits").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new FruitDTO("Watermelon", 2, providerId))))
                 .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
 
         Fruit fruit = objectMapper.readValue(response, Fruit.class);
 
-        mockMvc.perform(delete("/fruits/{id}", fruit.getId())).andExpect(status().isNoContent());
+        mockMvc.perform(delete("/fruits/{id}", fruit.getId()))
+                .andExpect(status().isNoContent());
 
-        mockMvc.perform(get("/fruits/{id}", fruit.getId())).andExpect(status().isNotFound());
+        mockMvc.perform(get("/fruits/{id}", fruit.getId()))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void removeFruit_shouldReturnNotFoundWhenFruitDoesNotExist() throws Exception {
+        mockMvc.perform(delete("/fruits/{id}", 1L))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getFruitById_shouldReturnCorrectFruit() throws Exception {
+        String response = mockMvc.perform(post("/fruits").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new FruitDTO("Watermelon", 2, providerId))))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
+
+        Fruit fruit = objectMapper.readValue(response, Fruit.class);
+
+        mockMvc.perform(get("/fruits/{id}", fruit.getId()))
+                .andExpect(jsonPath("$.id").value(notNullValue())).andExpect(jsonPath("$.name").value("Watermelon")).andExpect(jsonPath("$.weightInKg").value(2));
+    }
+
+    @Test
+    void getFruitById_shouldReturnNotFoundWhenFruitDoesNotExist() throws Exception {
+        mockMvc.perform(get("/fruits/{id}", 1L))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getFruits_shouldReturnEmptyListInitially() throws Exception {
+        mockMvc.perform(get("/fruits"))
+                .andExpect(status().isOk()).andExpect(content().json("[]"));
     }
 
     @Test
@@ -97,9 +126,37 @@ public class FruitControllerTest {
         mockMvc.perform(post("/fruits").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new FruitDTO("Melon", 3, providerId))))
                 .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
 
-        mockMvc.perform(get("/fruits")).andExpect(status().isOk()).andExpect(jsonPath("$.length()").value(2))
+        mockMvc.perform(get("/fruits")).andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].id").value(notNullValue())).andExpect(jsonPath("$[0].name").value("Watermelon")).andExpect(jsonPath("$[0].weightInKg").value(2))
                 .andExpect(jsonPath("$[1].id").value(notNullValue())).andExpect(jsonPath("$[1].name").value("Melon")).andExpect(jsonPath("$[1].weightInKg").value(3));
+    }
 
+    @Test
+    void getFruitsByProviderId_shouldReturnAllExistingFruitsByGivenProvider() throws Exception {
+        String response = mockMvc.perform(post("/providers").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new ProviderDTO("Joao", "Portugal"))))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
+
+        Provider provider2 = objectMapper.readValue(response, Provider.class);
+
+        mockMvc.perform(post("/fruits").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new FruitDTO("Watermelon", 2, provider2.getId()))))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
+
+        mockMvc.perform(post("/fruits").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new FruitDTO("Melon", 3, providerId))))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
+
+        mockMvc.perform(post("/fruits").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new FruitDTO("Apple", 1, providerId))))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
+
+        mockMvc.perform(get("/fruits").param("providerId", String.valueOf(providerId)))
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].id").value(notNullValue())).andExpect(jsonPath("$[0].name").value("Melon")).andExpect(jsonPath("$[0].weightInKg").value(3))
+                .andExpect(jsonPath("$[1].id").value(notNullValue())).andExpect(jsonPath("$[1].name").value("Apple")).andExpect(jsonPath("$[1].weightInKg").value(1));
+    }
+
+    @Test
+    void getFruitsByProviderId_shouldReturnNotFoundForNonExistingProvider() throws Exception {
+        mockMvc.perform(get("/fruits").param("providerId", String.valueOf(providerId + 1L)))
+                .andExpect(status().isNotFound());
     }
 }

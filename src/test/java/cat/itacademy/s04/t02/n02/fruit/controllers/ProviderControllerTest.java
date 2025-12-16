@@ -43,11 +43,6 @@ public class ProviderControllerTest {
     }
 
     @Test
-    void getProviders_shouldReturnEmptyListInitially() throws Exception {
-        mockMvc.perform(get("/providers")).andExpect(status().isOk()).andExpect(content().json("[]"));
-    }
-
-    @Test
     void createProvider_shouldReturnProviderWithId() throws Exception {
         mockMvc.perform(post("/providers").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new ProviderDTO("Albert", "Spain"))))
                 .andExpect(status().isCreated()).andExpect(jsonPath("$.id").value(notNullValue())).andExpect(jsonPath("$.name").value("Albert")).andExpect(jsonPath("$.country").value("Spain"));
@@ -60,21 +55,6 @@ public class ProviderControllerTest {
 
         mockMvc.perform(post("/providers").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new ProviderDTO("Albert", "Spain"))))
                 .andExpect(status().isConflict());
-    }
-
-    @Test
-    void getProviderById_shouldReturnCorrectProvider() throws Exception {
-        String response = mockMvc.perform(post("/providers").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new ProviderDTO("Albert", "Spain"))))
-                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
-
-        Provider provider = objectMapper.readValue(response, Provider.class);
-
-        mockMvc.perform(get("/providers/{id}", provider.getId())).andExpect(jsonPath("$.id").value(notNullValue())).andExpect(jsonPath("$.name").value("Albert")).andExpect(jsonPath("$.country").value("Spain"));
-    }
-
-    @Test
-    void getProviderById_shouldReturnNotFoundWhenProviderDoesNotExist() throws Exception {
-        mockMvc.perform(get("/providers/{id}", 1L)).andExpect(status().isNotFound());
     }
 
     @Test
@@ -115,9 +95,11 @@ public class ProviderControllerTest {
 
         Provider provider = objectMapper.readValue(response, Provider.class);
 
-        mockMvc.perform(delete("/providers/{id}", provider.getId())).andExpect(status().isNoContent());
+        mockMvc.perform(delete("/providers/{id}", provider.getId()))
+                .andExpect(status().isNoContent());
 
-        mockMvc.perform(get("/providers/{id}", provider.getId())).andExpect(status().isNotFound());
+        mockMvc.perform(get("/providers/{id}", provider.getId()))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -133,9 +115,34 @@ public class ProviderControllerTest {
 
         Provider provider = objectMapper.readValue(response, Provider.class);
 
-        mockMvc.perform(post("/fruits").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new FruitDTO("Watermelon", 2, provider.getId())))).andExpect(status().isCreated());
+        mockMvc.perform(post("/fruits").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new FruitDTO("Watermelon", 2, provider.getId()))))
+                .andExpect(status().isCreated());
 
-        mockMvc.perform(delete("/providers/{id}", provider.getId())).andExpect(status().isConflict());
+        mockMvc.perform(delete("/providers/{id}", provider.getId()))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void getProviderById_shouldReturnCorrectProvider() throws Exception {
+        String response = mockMvc.perform(post("/providers").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new ProviderDTO("Albert", "Spain"))))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
+
+        Provider provider = objectMapper.readValue(response, Provider.class);
+
+        mockMvc.perform(get("/providers/{id}", provider.getId())).andExpect(jsonPath("$.id").value(notNullValue()))
+                .andExpect(jsonPath("$.name").value("Albert")).andExpect(jsonPath("$.country").value("Spain"));
+    }
+
+    @Test
+    void getProviderById_shouldReturnNotFoundWhenProviderDoesNotExist() throws Exception {
+        mockMvc.perform(get("/providers/{id}", 1L))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getProviders_shouldReturnEmptyListInitially() throws Exception {
+        mockMvc.perform(get("/providers"))
+                .andExpect(status().isOk()).andExpect(content().json("[]"));
     }
 
     @Test
@@ -146,9 +153,9 @@ public class ProviderControllerTest {
         mockMvc.perform(post("/providers").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new ProviderDTO("Joao", "Portugal"))))
                 .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
 
-        mockMvc.perform(get("/providers")).andExpect(status().isOk()).andExpect(jsonPath("$.length()").value(2))
+        mockMvc.perform(get("/providers")).andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].id").value(notNullValue())).andExpect(jsonPath("$[0].name").value("Albert")).andExpect(jsonPath("$[0].country").value("Spain"))
                 .andExpect(jsonPath("$[1].id").value(notNullValue())).andExpect(jsonPath("$[1].name").value("Joao")).andExpect(jsonPath("$[1].country").value("Portugal"));
-
     }
 }
