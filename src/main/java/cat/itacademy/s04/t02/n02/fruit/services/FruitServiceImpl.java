@@ -25,8 +25,7 @@ public class FruitServiceImpl implements FruitService {
     @Override
     public Fruit createFruit(FruitDTO fruitDTO) {
         Provider provider = providerRepository.findById(fruitDTO.getProviderId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Provider " + fruitDTO.getProviderId() + " not found"));
-
-
+        
         Fruit fruit = new Fruit(fruitDTO.getName(), fruitDTO.getWeightInKg(), provider);
         return fruitRepository.save(fruit);
     }
