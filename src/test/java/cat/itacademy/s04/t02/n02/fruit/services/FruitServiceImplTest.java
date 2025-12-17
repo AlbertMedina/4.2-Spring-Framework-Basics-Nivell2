@@ -55,7 +55,7 @@ public class FruitServiceImplTest {
         Fruit fruit = new Fruit("Watermelon", 2, provider);
         when(fruitRepository.findById(1L)).thenReturn(Optional.of(fruit));
         when(fruitRepository.save(any(Fruit.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        
+
         when(providerRepository.findById(1L)).thenReturn(Optional.of(provider));
 
         FruitDTO fruitDTO = new FruitDTO("Melon", 3, 1L);
@@ -71,15 +71,13 @@ public class FruitServiceImplTest {
 
     @Test
     void removeFruit_shouldDeleteExistingFruit() {
-        Long fruitId = 1L;
+        when(fruitRepository.existsById(1L)).thenReturn(true);
+        doNothing().when(fruitRepository).deleteById(1L);
 
-        when(fruitRepository.existsById(fruitId)).thenReturn(true);
-        doNothing().when(fruitRepository).deleteById(fruitId);
+        assertDoesNotThrow(() -> fruitService.removeFruit(1L));
 
-        assertDoesNotThrow(() -> fruitService.removeFruit(fruitId));
-
-        verify(fruitRepository).existsById(fruitId);
-        verify(fruitRepository).deleteById(fruitId);
+        verify(fruitRepository).existsById(1L);
+        verify(fruitRepository).deleteById(1L);
     }
 
     @Test

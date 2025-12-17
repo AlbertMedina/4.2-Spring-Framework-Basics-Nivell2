@@ -67,15 +67,13 @@ public class ProviderServiceImplTest {
 
     @Test
     void removeProvider_shouldDeleteExistingProvider() {
-        Long providerId = 1L;
+        when(providerRepository.existsById(1L)).thenReturn(true);
+        doNothing().when(providerRepository).deleteById(1L);
 
-        when(providerRepository.existsById(providerId)).thenReturn(true);
-        doNothing().when(providerRepository).deleteById(providerId);
+        assertDoesNotThrow(() -> providerService.removeProvider(1L));
 
-        assertDoesNotThrow(() -> providerService.removeProvider(providerId));
-
-        verify(providerRepository).existsById(providerId);
-        verify(providerRepository).deleteById(providerId);
+        verify(providerRepository).existsById(1L);
+        verify(providerRepository).deleteById(1L);
     }
 
     @Test
