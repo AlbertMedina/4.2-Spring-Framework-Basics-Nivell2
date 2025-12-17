@@ -92,7 +92,7 @@ public class ProviderServiceImplTest {
     }
 
     @Test
-    void getAllProvider_shouldReturnListOfProvider() {
+    void getAllProviders_shouldReturnListOfProviders() {
         Provider provider1 = new Provider("Albert", "Spain");
         Provider provider2 = new Provider("Joao", "Portugal");
 
