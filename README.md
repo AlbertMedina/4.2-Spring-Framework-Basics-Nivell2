@@ -30,7 +30,7 @@ Each fruit is associated with a provider, and the API allows registering, retrie
 ## Execution
 1. Build and start the containers.
 ```docker-compose up --build```
-This will start MongoDB and the Spring Boot API. The API will be available at http://localhost:8080.
+This will start MySQL and the Spring Boot API. The API will be available at http://localhost:8080.
 2. Test endpoints with Postman or any HTTP client.
 - Example endpoints:
   - POST / GET -> /providers
