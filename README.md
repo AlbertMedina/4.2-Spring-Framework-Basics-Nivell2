@@ -35,15 +35,21 @@ This will start MongoDB and the Spring Boot API. The API will be available at ht
 - Example endpoints:
   - POST / GET -> /providers
   - GET / PUT / DELETE -> /providers/{id}
-  - 
-- Example POST JSON:
+  - POST / GET -> /fruits
+  - GET / PUT / DELETE -> /fruits/{id}
+  - GET -> /fruits?providerId={id}
+- Example Provider POST JSON:
 ```
 {
-  "customerName": "Joan",
-  "deliveryDate": "2025-12-18",
-  "items": [
-    { "fruitName": "Apple", "quantityInKilos": 5 },
-    { "fruitName": "Banana", "quantityInKilos": 3 }
-  ]
+  "name": "Fruits Co.",
+  "country": "Spain"
+}
+```
+- Example Fruit POST JSON:
+```
+{
+  "name": "Watermelon",
+  "weightInKg": 2,
+  "providerId": 1
 }
 ```
